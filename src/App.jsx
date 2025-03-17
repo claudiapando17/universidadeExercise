@@ -6,9 +6,13 @@ import './index.css'
 import Header from './components/bars/Header';
 import Footer from './components/bars/Footer';
 
-import HomePage from './pages/HomePage';
-import NotFoundPage from './pages/NotFoundPage';
-
+import HomePage from './components/pages/HomePage';
+import NotFoundPage from './components/pages/NotFoundPage';
+import CourseDetailsPage from './components/pages/CourseDetailsPage';
+import TeacherDetailsPage from './components/pages/TeacherDetailsPage';
+import StudentsDetailsPage from './components/pages/StudentsDetailsPage';
+import AddCoursePage from './components/funtionalities/AddCoursePage';
+import EditCoursePage from './components/funtionalities/EditCoursePage';
 import { Routes, Route } from'react-router-dom';
 
 
@@ -24,8 +28,21 @@ function App() {
       <Header id= "header"/>
 
       <Routes>
+
         <Route path="/" element={<HomePage />} />
+
+        <Route path="/homepage/add" element={<AddCoursePage dataLink={dataLinkCourses} />} />
+
+        <Route path="/homepage/:courseId/edit" element={<EditCoursePage dataLink={dataLinkCourses} />} />
+
         <Route path="*" element={<NotFoundPage />} />
+
+        <Route path="/courses/:courseId" element={<CourseDetailsPage dataLink={dataLinkSubjects}/>} />
+
+        <Route path="/teachers/:teacherId" element={<TeacherDetailsPage dataLink={dataLinkTeachers}/>} />
+
+        <Route path="/students/:studentId" element={<StudentsDetailsPage dataLink={dataLinkStudents} />} />
+
       </Routes>
 
       <Footer id="footer"/>
@@ -34,4 +51,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
