@@ -13,7 +13,7 @@ import TeacherDetailsPage from './components/pages/TeacherDetailsPage';
 import StudentsDetailsPage from './components/pages/StudentsDetailsPage';
 import AddCoursePage from './components/funtionalities/AddCoursePage';
 import EditCoursePage from './components/funtionalities/EditCoursePage';
-import { Routes, Route } from'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 
 function App() {
@@ -24,29 +24,31 @@ function App() {
 
   return (
     <>
-      <div>
-      <Header id= "header"/>
+      <div className='flex flex-col min-h-screen bg-gray-100'>
+        <Header id="header" />
 
-      <Routes>
+        <div className='flex-grow'>
+          <Routes>
 
-        <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage />} />
 
-        <Route path="/homepage/add" element={<AddCoursePage dataLink={dataLinkCourses} />} />
+            <Route path="/homepage/add" element={<AddCoursePage dataLink={dataLinkCourses} />} />
 
-        <Route path="/homepage/:courseId/edit" element={<EditCoursePage dataLink={dataLinkCourses} />} />
+            <Route path="/homepage/:courseId/edit" element={<EditCoursePage dataLink={dataLinkCourses} />} />
 
-        <Route path="*" element={<NotFoundPage />} />
+            <Route path="*" element={<NotFoundPage />} />
 
-        <Route path="/courses/:courseId" element={<CourseDetailsPage dataLink={dataLinkSubjects}/>} />
+            <Route path="/courses/:courseId" element={<CourseDetailsPage dataLink={dataLinkSubjects} />} />
 
-        <Route path="/teachers/:teacherId" element={<TeacherDetailsPage dataLink={dataLinkTeachers}/>} />
+            <Route path="/teachers/:teacherId" element={<TeacherDetailsPage dataLink={dataLinkTeachers} />} />
 
-        <Route path="/students/:studentId" element={<StudentsDetailsPage dataLink={dataLinkStudents} />} />
+            <Route path="/students/:courseId" element={<StudentsDetailsPage dataLink={dataLinkStudents} />} />
 
-      </Routes>
+          </Routes>
+        </div>
 
-      <Footer id="footer"/>
-    </div >
+        <Footer id="footer" />
+      </div >
     </>
   )
 }

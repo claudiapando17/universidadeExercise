@@ -26,7 +26,7 @@ function HomePage() {
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-8 text-center">
+    <div className="min-h-screen bg-gray-100 p-8 text-center mb-16">
       <h1 className="text-7xl font-bold uppercase">
         Global University
         </h1>

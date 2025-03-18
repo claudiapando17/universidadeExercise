@@ -75,8 +75,8 @@ function CourseDetailsPage() {
   if (!course) return <h2 className="text-center text-gray-500 mt-10">Course not found.</h2>;
 
   return (
-    <div className="max-w-4xl mx-auto p-4 mt-2">
-      <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="max-w-4xl mx-auto p-4 mt-1">
+      <div className="bg-white rounded-lg shadow-lg p-4">
         <h2 className="text-3xl font-bold text-center uppercase">
           {course.name}
         </h2>
@@ -86,21 +86,21 @@ function CourseDetailsPage() {
           alt={course.name}
           className="w-full h-64 object-cover mt-4 rounded-lg shadow"
         />
-        <p className="text-gray-700 mt-4 text-center">{course.description}</p>
+        <p className="text-gray-700 mt-2 text-center">{course.description}</p>
       </div>
 
 
       <div className="mt-6 flex flex-col items-center justify-center w-full">
-        <h3 className="text-2xl font-semibold">
+        <h2 className="text-3xl font-semibold">
           Subjects
-        </h3>
+        </h2>
 
         {subjects.length > 0 ? (
 
           <ul className="m-5 flex flex-row gap-5 w-full items-center justify-center">
             {subjects.map((subject, index) => (
-              <li key={index} className="bg-gray-100 p-6 rounded-lg shadow-md">
-                <h4 className="text-lg font-bold text-center mb-3">{
+              <li key={index} className="bg-white p-6 rounded-lg shadow-md">
+                <h4 className="text-l font-bold text-center mb-3">{
                   subject.name || "Unknown Subject"}
                 </h4>
                 <p className="text-gray-500 text-sm">
@@ -109,13 +109,9 @@ function CourseDetailsPage() {
                 <p className="text-gray-600 inline-block">
                   Taught by:
                 </p>
-                <NavLink to={`/teachers/${subject.teacherId}`}
+                <NavLink to={`/teachers/${subject.teacherId}?courseId=${courseId}`}
                   className="text-black font-semibold inline-block ml-2 hover:underline">
                   {subject.teacherName || "Unknown Teacher"}
-                </NavLink>
-                <NavLink to={`/students/${subject.studentId}`}
-                  className="text-black font-semibold inline-block ml-2 hover:underline">
-                  {subject.studentName || "Unknown Students"}
                 </NavLink>
               </li>
             ))}
@@ -124,9 +120,18 @@ function CourseDetailsPage() {
         ) : (
           <p className="text-gray-500 mt-2">No subjects available for this course.</p>
         )}
+        <div>
+          <NavLink to={`/students/${courseId}`}>
+            <h3 className="text-xl font-semibold hover:underline">
+              Check our Students
+            </h3>
+          </NavLink>
+        </div>
       </div>
 
-      <div className="mt-6 text-center">
+
+
+      <div className="mt-20 text-center">
         <NavLink to="/">
           <button className="border-cyan-900 border-2 text-cyan-900 px-4 py-2 rounded hover:bg-cyan-900 hover:text-white text-sm">
             Back
