@@ -12,6 +12,11 @@ function CourseDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Função para verificar se o nome do professor contém a palavra "teacher"
+  const isValidTeacher = (teacherName) => {
+    return teacherName && teacherName.toLowerCase().includes("teacher");
+  };
+
   useEffect(() => {
     if (!courseId) return;
 
@@ -45,7 +50,6 @@ function CourseDetailsPage() {
     try {
       console.log("Fetching subjects with IDs:", subjectIds); 
 
-      // Buscar cada subject diretamente por ID na API
       const subjectRequests = subjectIds.map(subjectId =>
         axios.get(`${dataLink}/subjects/${subjectId}.json`).catch(() => null)
       );
@@ -55,7 +59,6 @@ function CourseDetailsPage() {
 
       console.log("Fetched subjects data:", subjectsData);
 
-      // Buscar professores para cada subject
       const teacherRequests = subjectsData.map(subject =>
         subject.teacherId
           ? axios.get(`${dataLink}/teachers/${subject.teacherId}.json`).catch(() => null)
@@ -65,7 +68,6 @@ function CourseDetailsPage() {
       const teacherResponses = await Promise.all(teacherRequests);
       const teachersData = teacherResponses.map(res => res?.data?.name || "Unknown Teacher");
 
-      // Atualizar subjects com os nomes dos professores
       const subjectsWithTeachers = subjectsData.map((subject, index) => ({
         ...subject,
         teacherName: teachersData[index]
@@ -79,7 +81,6 @@ function CourseDetailsPage() {
   };
 
   const handleDelete = async () => {
-  
     try {
       await axios.delete(`${dataLink}/courses/${courseId}.json`);
       navigate("/"); // Redireciona para a home
@@ -119,24 +120,33 @@ function CourseDetailsPage() {
                   Semester: {subject.semester || "N/A"}
                 </p>
                 <p className="text-gray-600 inline-block">Taught by:</p>
-                <NavLink
-                  to={`/teachers/${subject.teacherId}?courseId=${courseId}`}
-                  className="text-black font-semibold inline-block ml-2 hover:underline"
-                >
-                  {subject.teacherName || "Unknown Teacher"}
-                </NavLink>
+
+                {/* Exibe o NavLink somente se o nome do professor contém "teacher" */}
+                {isValidTeacher(subject.teacherName) ? (
+                  <NavLink
+                    to={`/teachers/${subject.teacherId}?courseId=${courseId}`}
+                    className="text-black font-semibold inline-block ml-2 hover:underline"
+                  >
+                    {subject.teacherName}
+                  </NavLink>
+                ) : (
+                  <span className="text-gray-500 ml-2">{subject.teacherName}</span>
+                )}
+
+                {/* Agora, o NavLink para os alunos também está dentro do map */}
+                {isValidTeacher(subject.teacherName) ? (
+                  <NavLink to={`/students/${courseId}`} className="text-xl font-semibold hover:underline mt-3">
+                    Check our Students
+                  </NavLink>
+                ) : (
+                  <span className="text-gray-500 ml-2">No Students</span>
+                )}
               </li>
             ))}
           </ul>
         ) : (
           <p className="text-gray-500 mt-2">No subjects available for this course.</p>
         )}
-
-        <div>
-          <NavLink to={`/students/${courseId}`}>
-            <h3 className="text-xl font-semibold hover:underline">Check our Students</h3>
-          </NavLink>
-        </div>
       </div>
 
       {/* Botão de deletar curso */}
