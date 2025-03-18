@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { NavLink } from "react-router-dom";
 
 function AddCoursePage() {
   const navigate = useNavigate();
@@ -36,30 +37,30 @@ function AddCoursePage() {
     }
 
     try {
-      // Criar cada teacher e subject na API
+
       const subjectIds = await Promise.all(
         subjects.map(async ({ name, semester, teacherName }) => {
-          // Criar o professor
-          const teacherResponse = await axios.post(`${dataLink}/teachers.json`, { name: teacherName });
-          const teacherId = teacherResponse.data.name; // ID gerado pelo Firebase
 
-          // Criar a disciplina associada ao professor
+          const teacherResponse = await axios.post(`${dataLink}/teachers.json`, { name: teacherName });
+          const teacherId = teacherResponse.data.name; 
+
+
           const subjectResponse = await axios.post(`${dataLink}/subjects.json`, { 
             name, 
             semester, 
             teacherId 
           });
 
-          return subjectResponse.data.name; // ID do subject gerado pelo Firebase
+          return subjectResponse.data.name; 
         })
       );
 
-      // Criar o curso associando os IDs dos subjects
+
       await axios.post(`${dataLink}/courses.json`, {
         name: courseName,
         description,
         image,
-        subjects: subjectIds, // Enviar os IDs ao invés dos nomes
+        subjects: subjectIds, 
       });
 
       navigate("/");
@@ -69,6 +70,7 @@ function AddCoursePage() {
   };
 
   return (
+    <>
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
       <h2 className="text-3xl font-bold text-center">Add New Course</h2>
 
@@ -151,6 +153,14 @@ function AddCoursePage() {
         </button>
       </form>
     </div>
+    <div className="mt-20 text-center">
+    <NavLink to="/">
+      <button className="border-cyan-900 border-2 text-cyan-900 px-4 py-2 rounded hover:bg-cyan-900 hover:text-white text-sm">
+        Back
+      </button>
+    </NavLink>
+  </div>
+  </>
   );
 }
 

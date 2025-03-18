@@ -12,9 +12,10 @@ function CourseDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Função para verificar se o nome do professor contém a palavra "teacher"
-  const isValidTeacher = (teacherName) => {
-    return teacherName && teacherName.toLowerCase().includes("teacher");
+  // Atualizando a função para verificar se o teacherId é válido (começando com "teacher" seguido de números)
+  const isValidTeacher = (teacherId) => {
+    const regex = /^teacher\d+$/;  // Verifica se o ID começa com "teacher" seguido de números
+    return teacherId && regex.test(teacherId);
   };
 
   useEffect(() => {
@@ -48,7 +49,7 @@ function CourseDetailsPage() {
 
   const fetchSubjects = async (subjectIds) => {
     try {
-      console.log("Fetching subjects with IDs:", subjectIds); 
+      console.log("Fetching subjects with IDs:", subjectIds);
 
       const subjectRequests = subjectIds.map(subjectId =>
         axios.get(`${dataLink}/subjects/${subjectId}.json`).catch(() => null)
@@ -83,7 +84,7 @@ function CourseDetailsPage() {
   const handleDelete = async () => {
     try {
       await axios.delete(`${dataLink}/courses/${courseId}.json`);
-      navigate("/"); // Redireciona para a home
+      navigate("/");
     } catch (error) {
       console.error("Error deleting course:", error);
     }
@@ -121,8 +122,7 @@ function CourseDetailsPage() {
                 </p>
                 <p className="text-gray-600 inline-block">Taught by:</p>
 
-                {/* Exibe o NavLink somente se o nome do professor contém "teacher" */}
-                {isValidTeacher(subject.teacherName) ? (
+                {isValidTeacher(subject.teacherId) ? (
                   <NavLink
                     to={`/teachers/${subject.teacherId}?courseId=${courseId}`}
                     className="text-black font-semibold inline-block ml-2 hover:underline"
@@ -132,34 +132,45 @@ function CourseDetailsPage() {
                 ) : (
                   <span className="text-gray-500 ml-2">{subject.teacherName}</span>
                 )}
-
-                {/* Agora, o NavLink para os alunos também está dentro do map */}
-                {isValidTeacher(subject.teacherName) ? (
-                  <NavLink to={`/students/${courseId}`} className="text-xl font-semibold hover:underline mt-3">
-                    Check our Students
-                  </NavLink>
-                ) : (
-                  <span className="text-gray-500 ml-2">No Students</span>
-                )}
               </li>
             ))}
           </ul>
         ) : (
           <p className="text-gray-500 mt-2">No subjects available for this course.</p>
         )}
+
+        {/* O link "Check our Students" agora está fora do card */}
+        {subjects.some(subject => isValidTeacher(subject.teacherId)) && (
+          <div className="mt-6">
+            <NavLink to={`/students/${courseId}`} className="text-xl font-semibold hover:underline">
+              Check our Students
+            </NavLink>
+          </div>
+        )}
       </div>
 
-      {/* Botão de deletar curso */}
-      {!courseId.startsWith("course") && (
-        <div className="mt-5 flex justify-center">
-          <button
-            onClick={handleDelete}
-            className="border-red-600 border-2 text-red-600 px-4 py-2 rounded hover:bg-red-600 hover:text-white text-md"
-          >
-            Delete Course
-          </button>
-        </div>
-      )}
+      <div className="flex flex-row justify-center gap-5 mt-1">
+
+        {!courseId.startsWith("course") && (
+          <div className="text-center">
+            <NavLink to={`/courses/editCourse/${courseId}`}>
+              <button className="flex items-center justify-center border-cyan-900 border-2 text-cyan-900 h-10 px-4 py-2 rounded hover:bg-cyan-900 hover:text-white text-sm">
+                Edit
+              </button>
+            </NavLink>
+          </div>
+        )}
+
+        {!courseId.startsWith("course") && (
+          <div className="justify-center items-center">
+            <button
+              onClick={handleDelete}
+              className="flex items-center justify-center border-red-600 border-2 text-red-600 h-10 px-4 py-2 rounded hover:bg-red-600 hover:text-white text-md">
+              Delete
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className="mt-20 text-center">
         <NavLink to="/">

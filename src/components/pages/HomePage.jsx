@@ -40,7 +40,7 @@ function HomePage() {
           </h2>
       ) : courses.length > 0 ? (
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mt-8">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mt-10">
           {courses.toReversed().map(({ id, name, description, image }) => (
             <div key={id} className="bg-white rounded-lg shadow-lg overflow-hidden">
               
@@ -61,9 +61,10 @@ function HomePage() {
       ) : (
         <p className="text-gray-500 mt-6">No courses available.</p>
       )}
-      <NavLink to="courses/addCourse" 
-      className="text-2xl text-gray-700 mt-2 hover:underline">
+      <NavLink to="courses/addCourse" >
+        <button className="mt-10 bg-cyan-900 border-2 text-white px-4 py-2 rounded hover:bg-white hover:text-cyan-900 text-sm hover:pointer">
         Add New Course
+        </button>
       </NavLink>
       
     </div>

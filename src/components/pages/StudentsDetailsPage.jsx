@@ -21,7 +21,7 @@ function StudentsDetailsPage() {
           const filteredStudents = Object.values(response.data).filter(student => student.courseId === courseId);
           setStudents(filteredStudents);
 
-          // Coletar todos os IDs de subjects
+
           const allSubjectIds = [...new Set(filteredStudents.flatMap(student => Object.keys(student.grades || {})))];
           fetchSubjects(allSubjectIds);
         } else {
