@@ -1,9 +1,10 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
 function CourseDetailsPage() {
   const { courseId } = useParams();
+  const navigate = useNavigate();
   const dataLink = "https://universidade-1cbf8-default-rtdb.europe-west1.firebasedatabase.app";
 
   const [course, setCourse] = useState(null);
@@ -19,6 +20,7 @@ function CourseDetailsPage() {
     axios
       .get(courseUrl)
       .then(response => {
+        console.log("Fetched course data:", response.data);
         if (response.data) {
           setCourse(response.data);
 
@@ -41,12 +43,17 @@ function CourseDetailsPage() {
 
   const fetchSubjects = async (subjectIds) => {
     try {
+      console.log("Fetching subjects with IDs:", subjectIds); 
+
+      // Buscar cada subject diretamente por ID na API
       const subjectRequests = subjectIds.map(subjectId =>
         axios.get(`${dataLink}/subjects/${subjectId}.json`).catch(() => null)
       );
 
       const subjectResponses = await Promise.all(subjectRequests);
-      const subjectsData = subjectResponses.map(res => res?.data).filter(Boolean);
+      const subjectsData = subjectResponses.map(res => res?.data ? { id: res.data.id, ...res.data } : null).filter(Boolean);
+
+      console.log("Fetched subjects data:", subjectsData);
 
       // Buscar professores para cada subject
       const teacherRequests = subjectsData.map(subject =>
@@ -65,8 +72,19 @@ function CourseDetailsPage() {
       }));
 
       setSubjects(subjectsWithTeachers);
-    } catch {
+    } catch (error) {
+      console.error("Error fetching subjects and teachers:", error);
       setError("Error fetching subjects and teachers.");
+    }
+  };
+
+  const handleDelete = async () => {
+  
+    try {
+      await axios.delete(`${dataLink}/courses/${courseId}.json`);
+      navigate("/"); // Redireciona para a home
+    } catch (error) {
+      console.error("Error deleting course:", error);
     }
   };
 
@@ -77,9 +95,7 @@ function CourseDetailsPage() {
   return (
     <div className="max-w-4xl mx-auto p-4 mt-1">
       <div className="bg-white rounded-lg shadow-lg p-4">
-        <h2 className="text-3xl font-bold text-center uppercase">
-          {course.name}
-        </h2>
+        <h2 className="text-3xl font-bold text-center uppercase">{course.name}</h2>
 
         <img
           src={course.image}
@@ -89,47 +105,51 @@ function CourseDetailsPage() {
         <p className="text-gray-700 mt-2 text-center">{course.description}</p>
       </div>
 
-
       <div className="mt-6 flex flex-col items-center justify-center w-full">
-        <h2 className="text-3xl font-semibold">
-          Subjects
-        </h2>
+        <h2 className="text-3xl font-semibold">Subjects</h2>
 
         {subjects.length > 0 ? (
-
           <ul className="m-5 flex flex-row gap-5 w-full items-center justify-center">
-            {subjects.map((subject, index) => (
-              <li key={index} className="bg-white p-6 rounded-lg shadow-md">
-                <h4 className="text-l font-bold text-center mb-3">{
-                  subject.name || "Unknown Subject"}
+            {subjects.map((subject) => (
+              <li key={subject.id} className="bg-white p-6 rounded-lg shadow-md">
+                <h4 className="text-l font-bold text-center mb-3">
+                  {subject.name}
                 </h4>
                 <p className="text-gray-500 text-sm">
-                  Semester: {subject.semester}
+                  Semester: {subject.semester || "N/A"}
                 </p>
-                <p className="text-gray-600 inline-block">
-                  Taught by:
-                </p>
-                <NavLink to={`/teachers/${subject.teacherId}?courseId=${courseId}`}
-                  className="text-black font-semibold inline-block ml-2 hover:underline">
+                <p className="text-gray-600 inline-block">Taught by:</p>
+                <NavLink
+                  to={`/teachers/${subject.teacherId}?courseId=${courseId}`}
+                  className="text-black font-semibold inline-block ml-2 hover:underline"
+                >
                   {subject.teacherName || "Unknown Teacher"}
                 </NavLink>
               </li>
             ))}
           </ul>
-
         ) : (
           <p className="text-gray-500 mt-2">No subjects available for this course.</p>
         )}
+
         <div>
           <NavLink to={`/students/${courseId}`}>
-            <h3 className="text-xl font-semibold hover:underline">
-              Check our Students
-            </h3>
+            <h3 className="text-xl font-semibold hover:underline">Check our Students</h3>
           </NavLink>
         </div>
       </div>
 
-
+      {/* Botão de deletar curso */}
+      {!courseId.startsWith("course") && (
+        <div className="mt-5 flex justify-center">
+          <button
+            onClick={handleDelete}
+            className="border-red-600 border-2 text-red-600 px-4 py-2 rounded hover:bg-red-600 hover:text-white text-md"
+          >
+            Delete Course
+          </button>
+        </div>
+      )}
 
       <div className="mt-20 text-center">
         <NavLink to="/">

@@ -61,6 +61,11 @@ function HomePage() {
       ) : (
         <p className="text-gray-500 mt-6">No courses available.</p>
       )}
+      <NavLink to="courses/addCourse" 
+      className="text-2xl text-gray-700 mt-2 hover:underline">
+        Add New Course
+      </NavLink>
+      
     </div>
   );
 }

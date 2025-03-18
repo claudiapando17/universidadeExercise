@@ -44,6 +44,8 @@ function App() {
 
             <Route path="/students/:courseId" element={<StudentsDetailsPage dataLink={dataLinkStudents} />} />
 
+            <Route path="/courses/addCourse" element={<AddCoursePage dataLink={dataLinkCourses} />} />
+
           </Routes>
         </div>
 
