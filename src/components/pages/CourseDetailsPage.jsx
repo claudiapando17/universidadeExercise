@@ -79,12 +79,12 @@ function CourseDetailsPage() {
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-3xl font-bold text-center uppercase">
           {course.name}
-          </h2>
+        </h2>
 
-        <img 
-        src={course.image} 
-        alt={course.name} 
-        className="w-full h-64 object-cover mt-4 rounded-lg shadow" 
+        <img
+          src={course.image}
+          alt={course.name}
+          className="w-full h-64 object-cover mt-4 rounded-lg shadow"
         />
         <p className="text-gray-700 mt-4 text-center">{course.description}</p>
       </div>
@@ -93,7 +93,7 @@ function CourseDetailsPage() {
       <div className="mt-6 flex flex-col items-center justify-center w-full">
         <h3 className="text-2xl font-semibold">
           Subjects
-          </h3>
+        </h3>
 
         {subjects.length > 0 ? (
 
@@ -101,18 +101,22 @@ function CourseDetailsPage() {
             {subjects.map((subject, index) => (
               <li key={index} className="bg-gray-100 p-6 rounded-lg shadow-md">
                 <h4 className="text-lg font-bold text-center mb-3">{
-                subject.name || "Unknown Subject"}
+                  subject.name || "Unknown Subject"}
                 </h4>
-                <p className="text-gray-600 inline-block">
-                  Taught by:    
-                  </p>
-                  <NavLink  to={`/teachers/${subject.teacherId}`}
-                  className="text-black font-semibold inline-block ml-2">
-                  {subject.teacherName || "Unknown Teacher"}
-                  </NavLink>
                 <p className="text-gray-500 text-sm">
                   Semester: {subject.semester}
-                  </p>
+                </p>
+                <p className="text-gray-600 inline-block">
+                  Taught by:
+                </p>
+                <NavLink to={`/teachers/${subject.teacherId}`}
+                  className="text-black font-semibold inline-block ml-2 hover:underline">
+                  {subject.teacherName || "Unknown Teacher"}
+                </NavLink>
+                <NavLink to={`/students/${subject.studentId}`}
+                  className="text-black font-semibold inline-block ml-2 hover:underline">
+                  {subject.studentName || "Unknown Students"}
+                </NavLink>
               </li>
             ))}
           </ul>
